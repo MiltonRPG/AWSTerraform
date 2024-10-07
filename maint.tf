@@ -4,5 +4,5 @@ provider "aws" {
 
 module "ecs_cluster" {
   source = "./modules/ecs-cluster"
-  cluster_name = "nginx-cluster"  # Puedes cambiar el nombre si lo deseas
+  cluster_name = "kc-ecs-proyectofinal-milton"  # Puedes cambiar el nombre si lo deseas
 }
