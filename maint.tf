@@ -15,6 +15,11 @@ module "nginx_service" {
   security_group_id = "sg-0123456789abcdef0"        # Reemplaza con tu security group
 }
 
+module "network" {
+  source  = "./modules/network"  # Ruta donde se encuentra el módulo network
+  vpc_id  = "vpc-0123456789abcdef0"  # Reemplaza con el ID de tu VPC
+}
+
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecsTaskExecutionRole"
