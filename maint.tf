@@ -11,14 +11,16 @@ module "nginx_service" {
   source            = "./modules/nginx-service"
   cluster_id        = module.ecs_cluster.cluster_id
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  subnets           = ["subnet-0123456789abcdef0"]  # Reemplaza con tus subnets
-  security_group_id = "sg-0123456789abcdef0"        # Reemplaza con tu security group
+  subnets           = [module.vpc.public_subnet_id, module.vpc.private_subnet_id]  # Usamos las subnets que acabamos de crear
+  security_group_id = module.vpc.nginx_security_group_id  # Usamos el grupo de seguridad creado
 }
 
-module "network" {
-  source  = "./modules/network"  # Ruta donde se encuentra el módulo network
-  vpc_id  = "vpc-0123456789abcdef0"  # Reemplaza con el ID de tu VPC
+
+module "vpc" {
+  source = "./modules/vpc"  # Cambia la ruta al módulo vpc
+  # Otras variables que pases al módulo
 }
+
 
 
 resource "aws_iam_role" "ecs_task_execution_role" {
