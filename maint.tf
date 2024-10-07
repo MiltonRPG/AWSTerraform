@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1" # O cambia a tu región preferida
+  region = "eu-west-1" # O cambia a tu región preferida
 }
 
 module "ecs_cluster" {
