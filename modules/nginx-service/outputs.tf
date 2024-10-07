@@ -1,6 +1,6 @@
-output "service_arn" {
-  description = "ARN del servicio ECS"
-  value       = aws_ecs_service.nginx_service.arn
+output "service_id" {
+  description = "Id del servicio ECS"
+  value       = aws_ecs_service.nginx_service.id
 }
 
 output "task_definition_arn" {
