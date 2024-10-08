@@ -20,6 +20,18 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
+# Crear una segunda subnet pública
+resource "aws_subnet" "public_subnet_2" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "10.0.3.0/24"       # Asigna un rango de IP para la segunda subnet pública
+  availability_zone = "eu-west-1b"        # Otra zona de disponibilidad
+  map_public_ip_on_launch = true          # Asignar IPs públicas automáticamente
+
+  tags = {
+    Name = "public-subnet-2"
+  }
+}
+
 # Crear una subnet privada
 resource "aws_subnet" "private_subnet" {
   vpc_id            = aws_vpc.my_vpc.id  # Usamos el ID de la VPC creada

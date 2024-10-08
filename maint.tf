@@ -13,6 +13,8 @@ module "nginx_service" {
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   subnets           = [module.vpc.public_subnet_id, module.vpc.private_subnet_id]  # Usamos las subnets que acabamos de crear
   security_group_id = module.vpc.nginx_security_group_id  # Usamos el grupo de seguridad creado
+  service_name       = "kc-nginx-service-milton"       # Nombre del servicio
+  task_family        = "nginx-task-family"             # Familia de tareas
 }
 
 
@@ -52,7 +54,7 @@ resource "aws_lb" "nginx_alb" {
   internal           = false  # El ALB será público (accesible desde Internet)
   load_balancer_type = "application"
   security_groups    = [module.vpc.nginx_security_group_id]  # Usamos el grupo de seguridad del módulo VPC
-  subnets            = [module.vpc.public_subnet_id]  # El ALB debe estar en la subnet pública
+  subnets            = [module.vpc.public_subnet_id, module.vpc.public_subnet_2.id]  # El ALB debe estar en la subnet pública
 
   enable_deletion_protection = false  # No proteger el ALB de eliminaciones
   tags = {
@@ -73,6 +75,7 @@ resource "aws_lb_listener" "nginx_listener" {
   }
 }
 
+
 # Target Group para ECS
 resource "aws_lb_target_group" "nginx_target_group" {
   name     = "nginx-target-group-milton"
@@ -90,7 +93,7 @@ resource "aws_lb_target_group" "nginx_target_group" {
 # Asociar la tarea de ECS con el Target Group
 resource "aws_lb_target_group_attachment" "nginx_target_attachment" {
   target_group_arn = aws_lb_target_group.nginx_target_group.arn  # Usar el ARN del Target Group que creamos
-  target_id        = aws_ecs_service.nginx_service.id            # Asociar con el servicio ECS
+  target_id        = module.nginx_service.service_id           # Asociar con el servicio ECS
   port             = 80                                          # Enrutar el tráfico al puerto 80 de las tareas
 }
 
