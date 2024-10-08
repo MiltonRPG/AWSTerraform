@@ -11,10 +11,12 @@ module "nginx_service" {
   source            = "./modules/nginx-service"
   cluster_id        = module.ecs_cluster.cluster_id
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  subnets           = [module.vpc.public_subnet_id, module.vpc.private_subnet_id]  # Usamos las subnets que acabamos de crear
+  subnets           = [module.vpc.private_subnet_id]  # Usamos las subnets que acabamos de crear
   security_group_id = module.vpc.nginx_security_group_id  # Usamos el grupo de seguridad creado
+  alb_security_group_id = module.vpc.alb_security_group_id
   service_name       = "kc-nginx-service-milton"       # Nombre del servicio
-  task_family        = "nginx-task-family"             # Familia de tareas
+  task_family        = "nginx-task-family"  
+  target_group_arn   = aws_lb_target_group.nginx_target_group.arn           # Familia de tareas
 }
 
 
@@ -53,7 +55,8 @@ resource "aws_lb" "nginx_alb" {
   name               = "nginx-alb-milton"
   internal           = false  # El ALB será público (accesible desde Internet)
   load_balancer_type = "application"
-  security_groups    = [module.vpc.nginx_security_group_id]  # Usamos el grupo de seguridad del módulo VPC
+  
+  security_groups    = [module.vpc.alb_security_group_id]
   subnets            = [module.vpc.public_subnet_id, module.vpc.public_subnet_2_id]  # El ALB debe estar en la subnet pública
 
   enable_deletion_protection = false  # No proteger el ALB de eliminaciones

@@ -21,3 +21,8 @@ output "nginx_security_group_id" {
   description = "El ID del grupo de seguridad para nginx"
   value       = aws_security_group.nginx_security_group.id
 }
+
+output "alb_security_group_id" {
+  description = "El ID del grupo de seguridad para el ALB"
+  value       = aws_security_group.alb_security_group.id
+}

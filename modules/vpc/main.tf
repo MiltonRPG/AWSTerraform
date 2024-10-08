@@ -116,7 +116,7 @@ resource "aws_security_group" "nginx_security_group" {
     from_port   = 80                    # Puerto 80 para HTTP
     to_port     = 80                    # Mismo puerto
     protocol    = "tcp"                 # Protocolo TCP
-    cidr_blocks = ["0.0.0.0/0"]         # Permitir tráfico desde cualquier lugar
+    security_groups = [aws_security_group.alb_security_group.id]         # Permitir tráfico desde cualquier lugar
   }
 
   # Reglas de salida (Outbound Rules)
@@ -131,4 +131,29 @@ resource "aws_security_group" "nginx_security_group" {
     Name = "nginx-security-group-milton"
   }
 }
+
+resource "aws_security_group" "alb_security_group" {
+  name        = "alb-security-group-milton"
+  description = "Permite trafico HTTP desde Internet"
+  vpc_id      = aws_vpc.my_vpc.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Permitir tráfico desde cualquier lugar
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb-security-group-milton"
+  }
+}
+
 
